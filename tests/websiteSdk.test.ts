@@ -11,7 +11,7 @@ test('reconstructPromptFromContext inverts page metadata into high-probability p
     pathname: '/enterprise-ga4-audit',
   });
 
-  expect(result.primaryPrompt).toBe('Find the best Enterprise GA4 Audit Automation Platform for enterprise websites');
+  expect(result.primaryPrompt).toContain('Enterprise GA4 Audit Automation Platform');
   expect(result.candidateQueries.length).toBeGreaterThan(0);
   expect(result.confidence).toBe('HIGH');
 });

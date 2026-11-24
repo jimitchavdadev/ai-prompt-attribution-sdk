@@ -5,8 +5,10 @@
   "private": true,
   "scripts": {
     "start": "bun run backend/src/server.ts",
-    "build:sdk": "bun build sdk/src/aitrack.ts --outfile sdk/dist/aitrack.min.js --minify",
-    "test": "bun test tests/crawlerClassifier.test.ts tests/privacy.test.ts tests/llmSdk.test.ts tests/correlation.test.ts tests/websiteSdk.test.ts",
+    "build:sdk": "cd sdk && bun run build",
+    "test": "bun test tests/crawlerClassifier.test.ts tests/privacy.test.ts tests/llmSdk.test.ts tests/correlation.test.ts tests/websiteSdk.test.ts tests/promptReconstructionBenchmark.test.ts tests/reconstructionStressAndBizarreInputs.test.ts",
+    "test:benchmark": "bun test tests/promptReconstructionBenchmark.test.ts",
+    "test:stress": "bun test tests/reconstructionStressAndBizarreInputs.test.ts",
     "test:e2e": "bun test tests/e2eWebsiteOnly.test.ts",
     "test:all": "bun run test && bun run test:e2e"
   },

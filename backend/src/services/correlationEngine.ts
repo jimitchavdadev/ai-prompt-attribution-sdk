@@ -44,16 +44,8 @@ export class CorrelationEngine {
     // 1. Differentiate AI Retrieval from Human Visit (Type 1 vs Type 3)
     const crawlerClassification = classifyUserAgent(payload.user_agent);
     if (crawlerClassification.isAiBot) {
-      const botRes = await this.retrievalProcessor.processBotRetrieval(payload, crawlerClassification);
-      return {
-        visitId: botRes.retrievalId,
-        activityType: 'ai_retrieval',
-        confidence: 'UNATTRIBUTED',
-        promptId: null,
-        platform: botRes.provider,
-        isBotRetrieval: true,
-        notes: botRes.notes,
-      };
+      const b = await this.retrievalProcessor.processBotRetrieval(payload, crawlerClassification);
+      return { visitId: b.retrievalId, activityType: 'ai_retrieval', confidence: 'UNATTRIBUTED', promptId: null, platform: b.provider, isBotRetrieval: true, notes: b.notes };
     }
 
     // 2. Token-Based Correlation (Extension or SDK Session Token)
@@ -80,12 +72,13 @@ export class CorrelationEngine {
     // 3. Native Website SDK AI Referral Detection & Prompt Reconstruction
     const { isAiReferral, platform } = isReferrerFromAiPlatform(payload.referrer);
     if (isAiReferral) {
-      // Reconstruct candidate prompt and queries from page context
       const reconstructed = reconstructPromptFromContext(platform, {
         url: payload.page_url,
         title: payload.page_title || '',
         h1: payload.page_h1,
         description: payload.meta_description,
+        schemaType: payload.schema_type,
+        schemaData: payload.schema_data,
       });
 
       // Check if user verified/confirmed the prompt via SDK intent widget

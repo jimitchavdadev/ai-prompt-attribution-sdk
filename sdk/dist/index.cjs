@@ -83,10 +83,16 @@ class AITrackClient {
   async trackPageView() {
     if (!this.config?.siteId || typeof window === "undefined")
       return null;
-    const pageTitle = document.title || "";
-    const h1El = document.querySelector("h1");
-    const pageH1 = h1El ? (h1El.textContent || "").trim() : "";
-    const metaDesc = document.querySelector('meta[name="description"]')?.getAttribute("content") || "";
+    let schemaType;
+    let schemaData = undefined;
+    try {
+      const script = document.querySelector('script[type="application/ld+json"]');
+      if (script?.textContent) {
+        const parsed = JSON.parse(script.textContent);
+        schemaType = parsed["@type"] || (Array.isArray(parsed) ? parsed[0]?.["@type"] : undefined);
+        schemaData = parsed;
+      }
+    } catch {}
     const payload = {
       site_id: this.config.siteId,
       api_key: this.config.apiKey,
@@ -94,9 +100,11 @@ class AITrackClient {
       referrer: document.referrer || "",
       session_id: this.sessionId,
       user_agent: navigator.userAgent,
-      page_title: pageTitle,
-      page_h1: pageH1,
-      meta_description: metaDesc
+      page_title: document.title || "",
+      page_h1: document.querySelector("h1")?.textContent?.trim() || "",
+      meta_description: document.querySelector('meta[name="description"]')?.getAttribute("content") || "",
+      schema_type: schemaType,
+      schema_data: schemaData
     };
     try {
       const res = await fetch(`${this.config.backendUrl}/api/v1/sdk/visit`, {
@@ -116,6 +124,7 @@ class AITrackClient {
         platform: data.platform,
         confidence: data.confidence,
         reconstructedPrompt: data.reconstructedPrompt,
+        alternativePrompts: data.alternativePrompts || [],
         candidateQueries: data.candidateQueries,
         isBot: Boolean(data.is_bot)
       };
@@ -168,34 +177,72 @@ class AITrackClient {
 }
 // src/reconstructor.ts
 function reconstructPrompt(platform, meta) {
-  const cleanTitle = (meta.title || "").replace(/[-|•].*$/, "").trim();
-  const topic = meta.h1 || cleanTitle || "solutions";
-  const lowerTopic = topic.toLowerCase();
-  let primaryPrompt = `Find the best ${topic} for enterprise websites`;
+  const rawTitle = meta.title || "";
+  const brandSplit = rawTitle.split(/\s*[-|•–—]\s*/);
+  const cleanTitle = brandSplit[0].trim();
+  const brand = brandSplit.length > 1 ? brandSplit[brandSplit.length - 1].trim() : cleanTitle;
+  const subject = meta.h1?.trim() || cleanTitle || "software solutions";
+  const urlLower = (meta.url || "").toLowerCase();
+  const titleLower = rawTitle.toLowerCase();
+  const h1Lower = (meta.h1 || "").toLowerCase();
+  const schema = (meta.schemaType || "").toLowerCase();
   let intentCategory = "recommendation";
+  let primaryPrompt = "";
+  const alternativePrompts = [];
   const candidateQueries = [];
-  if (lowerTopic.includes("pricing") || meta.url.includes("pricing")) {
-    intentCategory = "commercial";
-    primaryPrompt = `How much does ${cleanTitle} cost and what are the pricing tiers?`;
-    candidateQueries.push(`${cleanTitle} pricing tiers`, `${cleanTitle} enterprise cost`);
-  } else if (lowerTopic.includes("vs") || lowerTopic.includes("comparison")) {
+  let score = 0.65;
+  if (urlLower.includes("pricing") || titleLower.includes("pricing") || titleLower.includes("cost") || meta.schemaData?.offers) {
+    intentCategory = "pricing";
+    score = 0.95;
+    primaryPrompt = `How much does ${brand} cost and what are the pricing tiers?`;
+    alternativePrompts.push(`What is the enterprise pricing for ${brand}?`);
+    candidateQueries.push(`${brand} pricing tiers`, `${brand} enterprise cost`);
+  } else if (urlLower.includes("/vs/") || urlLower.includes("compare") || /\b(vs|versus)\b/i.test(titleLower)) {
     intentCategory = "comparison";
-    primaryPrompt = `Compare the best ${topic} for enterprise teams`;
-    candidateQueries.push(`best ${topic} comparison`, `top alternatives to ${cleanTitle}`);
+    score = 0.9;
+    const vsMatch = titleLower.match(/\b([a-zA-Z0-9]+)\s+vs\s+([a-zA-Z0-9]+)\b/i);
+    if (vsMatch) {
+      primaryPrompt = `Compare ${vsMatch[1]} vs ${vsMatch[2]} for enterprise teams`;
+      alternativePrompts.push(`Which is better: ${vsMatch[1]} or ${vsMatch[2]}?`);
+    } else {
+      primaryPrompt = `Compare the best ${subject} for enterprise teams`;
+      alternativePrompts.push(`Top alternatives to ${brand}`);
+    }
+    candidateQueries.push(`best ${subject} comparison`, `top alternatives to ${brand}`);
+  } else if (urlLower.includes("how-to") || titleLower.startsWith("how to") || schema.includes("howto")) {
+    intentCategory = "how_to";
+    score = 0.88;
+    primaryPrompt = `How to implement ${subject} step by step?`;
+    alternativePrompts.push(`Complete guide to ${subject}`);
+    candidateQueries.push(`how to ${subject}`, `${subject} tutorial guide`);
+  } else if (titleLower.includes("troubleshoot") || titleLower.includes("fix") || titleLower.includes("error")) {
+    intentCategory = "problem_solving";
+    score = 0.85;
+    primaryPrompt = `How to fix ${subject} issues and errors?`;
+    alternativePrompts.push(`Troubleshoot ${subject}`);
+    candidateQueries.push(`how to fix ${subject}`, `troubleshoot ${subject}`);
   } else {
-    candidateQueries.push(`best ${topic} enterprise`, `top rated ${topic}`);
+    intentCategory = "recommendation";
+    score = 0.8;
+    primaryPrompt = `Find the best ${subject} for enterprise websites`;
+    alternativePrompts.push(`What are the top rated ${subject} tools in 2026?`);
+    candidateQueries.push(`best ${subject} enterprise`, `top rated ${subject}`);
   }
   if (platform === "chatgpt")
-    candidateQueries.unshift(`recommend ${topic} solutions`);
+    candidateQueries.unshift(`recommend ${subject} solutions`);
   else if (platform === "gemini")
-    candidateQueries.unshift(`Google search: top ${topic}`);
+    candidateQueries.unshift(`Google search: top ${subject}`);
   else if (platform === "claude")
-    candidateQueries.unshift(`overview of ${topic} platforms`);
+    candidateQueries.unshift(`overview of ${subject} platforms`);
+  else if (platform === "perplexity")
+    candidateQueries.unshift(`${subject} reviews`);
   return {
     primaryPrompt,
+    alternativePrompts,
     candidateQueries: [...new Set(candidateQueries)],
     intentCategory,
-    confidence: cleanTitle ? "HIGH" : "MEDIUM"
+    confidence: score >= 0.8 ? "HIGH" : "MEDIUM",
+    confidenceScore: score
   };
 }
 // src/classifier.ts

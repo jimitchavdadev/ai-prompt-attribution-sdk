@@ -37,10 +37,16 @@ export class AITrackClient {
   public async trackPageView(): Promise<AttributionEvent | null> {
     if (!this.config?.siteId || typeof window === 'undefined') return null;
 
-    const pageTitle = document.title || '';
-    const h1El = document.querySelector('h1');
-    const pageH1 = h1El ? (h1El.textContent || '').trim() : '';
-    const metaDesc = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+    let schemaType: string | undefined;
+    let schemaData: any = undefined;
+    try {
+      const script = document.querySelector('script[type="application/ld+json"]');
+      if (script?.textContent) {
+        const parsed = JSON.parse(script.textContent);
+        schemaType = parsed['@type'] || (Array.isArray(parsed) ? parsed[0]?.['@type'] : undefined);
+        schemaData = parsed;
+      }
+    } catch {}
 
     const payload = {
       site_id: this.config.siteId,
@@ -49,9 +55,11 @@ export class AITrackClient {
       referrer: document.referrer || '',
       session_id: this.sessionId,
       user_agent: navigator.userAgent,
-      page_title: pageTitle,
-      page_h1: pageH1,
-      meta_description: metaDesc,
+      page_title: document.title || '',
+      page_h1: document.querySelector('h1')?.textContent?.trim() || '',
+      meta_description: document.querySelector('meta[name="description"]')?.getAttribute('content') || '',
+      schema_type: schemaType,
+      schema_data: schemaData,
     };
 
     try {
@@ -74,6 +82,7 @@ export class AITrackClient {
         platform: data.platform,
         confidence: data.confidence,
         reconstructedPrompt: data.reconstructedPrompt,
+        alternativePrompts: data.alternativePrompts || [],
         candidateQueries: data.candidateQueries,
         isBot: Boolean(data.is_bot),
       };
@@ -81,7 +90,6 @@ export class AITrackClient {
       if (typeof this.config.onAttribution === 'function') {
         this.config.onAttribution(event);
       }
-
       return event;
     } catch (err) {
       console.warn('[AITRACK] Pageview error:', err);

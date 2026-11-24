@@ -136,6 +136,8 @@ export interface SdkVisitPayload {
   meta_description?: string;
   confirmed_prompt?: string;
   intent_verified?: boolean;
+  schema_type?: string;
+  schema_data?: any;
 }
 
 export interface CrawlerLogPayload {
