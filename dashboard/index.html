@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Prompt Attribution & Discovery Analytics</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-pill">AI ATTRIBUTION ENGINE</div>
+      <h1>Discovery & Referral Tracking Dashboard</h1>
+    </div>
+    <div class="header-right">
+      <button id="refresh-btn" class="btn btn-secondary">Refresh Data</button>
+      <button id="export-btn" class="btn btn-primary">Export JSON</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Overview Metrics Cards -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-title">Captured Prompts</span>
+        <span class="kpi-value" id="kpi-prompts">0</span>
+        <span class="kpi-sub">Consented user turns</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-title">AI Search Queries</span>
+        <span class="kpi-value" id="kpi-queries">0</span>
+        <span class="kpi-sub">Observed grounding queries</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-title">AI Retrievals (Bot)</span>
+        <span class="kpi-value" id="kpi-retrievals">0</span>
+        <span class="kpi-sub">Type 1 Server-side hits</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-title">AI Citations</span>
+        <span class="kpi-value" id="kpi-citations">0</span>
+        <span class="kpi-sub">Type 2 Visible references</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-title">Attributed Visits</span>
+        <span class="kpi-value" id="kpi-visits">0</span>
+        <span class="kpi-sub">Type 3 Human click-throughs</span>
+      </div>
+      <div class="kpi-card highlight">
+        <span class="kpi-title">High Confidence %</span>
+        <span class="kpi-value" id="kpi-confidence">0%</span>
+        <span class="kpi-sub">Token verified connections</span>
+      </div>
+    </section>
+
+    <!-- Platform Breakdown -->
+    <section class="section-block">
+      <h2>AI Platform Breakdown</h2>
+      <div class="platform-cards" id="platform-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- Visual Journey Inspector -->
+    <section class="section-block" id="journey-section">
+      <div class="journey-header">
+        <h2>Prompt-to-Website Journey Inspector</h2>
+        <span class="journey-prompt-badge" id="journey-prompt-label">Select a prompt below</span>
+      </div>
+      <div class="journey-pipeline" id="journey-pipeline">
+        <div class="journey-step"><div class="step-num">1</div><div class="step-label">User Prompt</div><div class="step-status">Select row</div></div>
+        <div class="journey-arrow">→</div>
+        <div class="journey-step"><div class="step-num">2</div><div class="step-label">AI Search Query</div><div class="step-status">—</div></div>
+        <div class="journey-arrow">→</div>
+        <div class="journey-step"><div class="step-num">3</div><div class="step-label">Server Retrieval</div><div class="step-status">—</div></div>
+        <div class="journey-arrow">→</div>
+        <div class="journey-step"><div class="step-num">4</div><div class="step-label">AI Citation</div><div class="step-status">—</div></div>
+        <div class="journey-arrow">→</div>
+        <div class="journey-step"><div class="step-num">5</div><div class="step-label">Human Click</div><div class="step-status">—</div></div>
+        <div class="journey-arrow">→</div>
+        <div class="journey-step"><div class="step-num">6</div><div class="step-label">Website Landing</div><div class="step-status">—</div></div>
+      </div>
+    </section>
+
+    <!-- Prompt-Level Analysis Table -->
+    <section class="section-block">
+      <div class="table-header-row">
+        <h2>Prompt-Level Analysis</h2>
+        <div class="filters">
+          <input type="text" id="filter-search" placeholder="Search prompt or query..." class="input-filter">
+          <select id="filter-platform" class="select-filter">
+            <option value="all">All Platforms</option>
+            <option value="chatgpt">ChatGPT</option>
+            <option value="gemini">Gemini</option>
+            <option value="claude">Claude</option>
+          </select>
+          <select id="filter-confidence" class="select-filter">
+            <option value="all">All Confidences</option>
+            <option value="VERIFIED">VERIFIED</option>
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="UNATTRIBUTED">UNATTRIBUTED</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Prompt ID</th>
+              <th>Platform</th>
+              <th>Prompt Text</th>
+              <th>Generated Queries</th>
+              <th>Cited Sources</th>
+              <th>Click</th>
+              <th>Confidence</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="prompts-table-body">
+            <tr><td colspan="8" class="text-center">Loading prompt records...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Website-Level Analysis -->
+    <section class="section-block">
+      <h2>Website-Level AI Attribution</h2>
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Site ID</th>
+              <th>Domain</th>
+              <th>AI Retrievals (Bot)</th>
+              <th>AI Citations</th>
+              <th>Referred Visits</th>
+              <th>Top Associated Prompts</th>
+            </tr>
+          </thead>
+          <tbody id="websites-table-body">
+            <tr><td colspan="6" class="text-center">Loading websites...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Acme Analytics - Enterprise GA4 Audit Automation</title>
+  <meta name="description" content="Enterprise GA4 audit automation software for real-time tagging compliance, anomaly detection, and analytics governance.">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 40px; max-width: 900px; margin: 0 auto; line-height: 1.5; }
+    .card { background: #1e293b; border-radius: 12px; padding: 24px; border: 1px solid #334155; margin-top: 24px; }
+    h1 { color: #38bdf8; font-size: 26px; }
+    .tag { display: inline-block; background: #0284c7; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; margin-bottom: 12px; }
+    .status-panel { background: #0b1329; border: 1px solid #1d4ed8; border-radius: 8px; padding: 16px; margin-top: 16px; font-family: monospace; font-size: 13px; }
+    .status-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .status-label { color: #94a3b8; }
+    .status-val { font-weight: 700; color: #f8fafc; }
+    .btn { background: #2563eb; color: #fff; padding: 10px 16px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: 600; margin-top: 14px; font-size: 13px; }
+  </style>
+
+  <!-- Native Website SDK (No browser extension required) -->
+  <script src="/sdk/aitrack.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Initialize pure Website SDK
+      AITRACK.init({
+        siteId: 'site_sample_y',
+        apiKey: 'pk_live_acme_analytics_2026',
+        backendUrl: window.location.origin,
+        showIntentBanner: true
+      });
+
+      // Update real-time inspection UI
+      setTimeout(() => {
+        document.getElementById('detected-referrer').textContent = document.referrer || 'Direct / None';
+        if (AITRACK.lastReconstructedPrompt) {
+          document.getElementById('reconstructed-prompt').textContent = AITRACK.lastReconstructedPrompt;
+        }
+      }, 600);
+    });
+  </script>
+</head>
+<body>
+  <span class="tag">ENTERPRISE SAAS</span>
+  <h1>Enterprise GA4 Audit Automation Platform</h1>
+  <p>Continuous automated auditing, schema validation, and real-time tracking anomaly detection for modern enterprise marketing analytics.</p>
+
+  <div class="card">
+    <h3>Website SDK - Live AI Discovery Inspection</h3>
+    <p style="font-size: 13px; color: #94a3b8; margin-top: 4px;">
+      Running purely on this website without requiring any visitor browser extension.
+    </p>
+
+    <div class="status-panel">
+      <div class="status-row">
+        <span class="status-label">Site ID:</span>
+        <span class="status-val">site_sample_y</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">HTTP Referrer:</span>
+        <span class="status-val" id="detected-referrer">Checking...</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Reconstructed Prompt:</span>
+        <span class="status-val" id="reconstructed-prompt" style="color:#38bdf8;">None</span>
+      </div>
+    </div>
+
+    <a href="/website-y/pricing.html" class="btn">View Enterprise Pricing Tiers →</a>
+  </div>
+</body>
+</html>

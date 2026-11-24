@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Attribution Tracker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <div class="logo-row">
+      <span class="badge">AI ATTRIBUTION</span>
+      <span id="status-indicator" class="status-dot active"></span>
+    </div>
+    <h2>Consent & Controls</h2>
+  </div>
+
+  <div class="content">
+    <div class="setting-row">
+      <div>
+        <label for="consent-toggle" class="setting-label">Attribution Tracking</label>
+        <p class="setting-desc">Capture prompts & citations on AI platforms</p>
+      </div>
+      <input type="checkbox" id="consent-toggle" checked>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <label for="share-toggle" class="setting-label">Share Prompt Text</label>
+        <p class="setting-desc">Disable to share metadata-only</p>
+      </div>
+      <input type="checkbox" id="share-toggle" checked>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <label for="redact-toggle" class="setting-label">Auto-Redact PII</label>
+        <p class="setting-desc">Mask emails, phones, API keys & secrets</p>
+      </div>
+      <input type="checkbox" id="redact-toggle" checked>
+    </div>
+
+    <div class="stats-box">
+      <div class="stat-item">
+        <span class="stat-value" id="prompts-count">0</span>
+        <span class="stat-label">Prompts Captured</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="active-platform">Ready</span>
+        <span class="stat-label">Platform State</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="view-dashboard-btn" class="btn btn-primary">Open Analytics</button>
+      <button id="clear-data-btn" class="btn btn-secondary">Clear Local Data</button>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

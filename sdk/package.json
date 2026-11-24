@@ -1,0 +1,36 @@
+{
+  "name": "@jimitchavdadev/aitrack",
+  "version": "1.0.0",
+  "description": "AI Prompt Attribution & Website Discovery Tracking SDK",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "browser": "dist/aitrack.min.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "bun build src/index.ts --outfile dist/index.js --format esm && bun build src/index.ts --outfile dist/index.cjs --format cjs && bun build src/aitrack.ts --outfile dist/aitrack.min.js --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jimitchavdadev/ai-prompt-attribution-sdk.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  },
+  "keywords": [
+    "ai-attribution",
+    "generative-engine-optimization",
+    "geo",
+    "chatgpt",
+    "gemini",
+    "claude",
+    "prompt-tracking",
+    "analytics"
+  ],
+  "author": "Jimit Chavda (https://github.com/jimitchavdadev)",
+  "license": "MIT"
+}

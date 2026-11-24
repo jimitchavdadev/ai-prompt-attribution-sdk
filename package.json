@@ -1,0 +1,28 @@
+{
+  "name": "reverse-engineering-prompt",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun run backend/src/server.ts",
+    "build:sdk": "bun build sdk/src/aitrack.ts --outfile sdk/dist/aitrack.min.js --minify",
+    "test": "bun test tests/crawlerClassifier.test.ts tests/privacy.test.ts tests/llmSdk.test.ts tests/correlation.test.ts tests/websiteSdk.test.ts",
+    "test:e2e": "bun test tests/e2eWebsiteOnly.test.ts",
+    "test:all": "bun run test && bun run test:e2e"
+  },
+  "devDependencies": {
+    "@fastify/cors": "^11.4.3",
+    "@fastify/static": "^10.1.12",
+    "@types/bun": "latest",
+    "@types/node": "^26.6.6",
+    "fastify": "^5.12.8",
+    "playwright": "^1.65.1",
+    "tsx": "^4.23.15"
+  },
+  "peerDependencies": {
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.4"
+  }
+}

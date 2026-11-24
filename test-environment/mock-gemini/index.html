@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mock Gemini (gemini.google.com)</title>
+  <style>
+    body { font-family: "Google Sans", -apple-system, Roboto, sans-serif; background: #131314; color: #e3e3e3; margin: 0; padding: 24px; }
+    .container { max-width: 800px; margin: 0 auto; min-height: 85vh; display: flex; flex-direction: column; justify-content: space-between; }
+    .msg-user { align-self: flex-end; background: #282a2c; padding: 12px 18px; border-radius: 20px; max-width: 75%; }
+    .msg-gemini { align-self: flex-start; padding: 12px 0; line-height: 1.6; }
+    .search-term-chip { display: inline-flex; align-items: center; background: #1e1f20; border: 1px solid #3c4043; border-radius: 16px; padding: 4px 10px; font-size: 12px; color: #8ab4f8; margin-right: 6px; }
+    .source-chip { display: inline-block; background: #1e1f20; border: 1px solid #3c4043; border-radius: 8px; padding: 6px 12px; color: #8ab4f8; text-decoration: none; margin-top: 8px; font-size: 13px; }
+    .input-wrapper { background: #1e1f20; border-radius: 28px; padding: 10px 20px; display: flex; align-items: center; border: 1px solid #3c4043; }
+    rich-textarea { display: block; flex: 1; }
+    rich-textarea div[contenteditable="true"] { width: 100%; outline: none; min-height: 24px; color: #fff; font-size: 15px; display: block; }
+    .gemini-send-btn { background: #8ab4f8; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; color: #131314; font-weight: 700; margin-left: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Google Gemini Grounding Simulation</h2>
+
+    <div id="chat-stream" style="display: flex; flex-direction: column; gap: 18px;">
+      <div class="msg-gemini">I am ready. Ask me anything about modern digital analytics tools.</div>
+    </div>
+
+    <div class="input-wrapper">
+      <rich-textarea>
+        <div contenteditable="true" role="textbox" id="gemini-input" placeholder="Enter a prompt here..."></div>
+      </rich-textarea>
+      <button class="gemini-send-btn" id="gemini-send" aria-label="Send">➤</button>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('gemini-input');
+    const sendBtn = document.getElementById('gemini-send');
+    const stream = document.getElementById('chat-stream');
+
+    function submitGemini() {
+      const text = input.innerText.trim();
+      if (!text) return;
+      setTimeout(() => { input.innerText = ''; }, 100);
+
+      const u = document.createElement('div');
+      u.className = 'msg-user';
+      u.textContent = text;
+      stream.appendChild(u);
+
+      setTimeout(() => {
+        const g = document.createElement('div');
+        g.className = 'msg-gemini';
+        g.innerHTML = `
+          <div>
+            <span class="search-term-chip" data-query="GA4 audit automated software">G Search: GA4 audit automated software</span>
+          </div>
+          <p style="margin-top: 10px;">Here is what Google Search Grounding retrieved for enterprise GA4 auditing:</p>
+          <div class="gemini-citation">
+            <a href="http://localhost:3000/website-y/index.html" class="source-chip" target="_blank">
+              🌐 Acme GA4 Enterprise Platform (Official Site)
+            </a>
+          </div>
+        `;
+        stream.appendChild(g);
+      }, 300);
+    }
+
+    sendBtn.addEventListener('click', submitGemini);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        submitGemini();
+      }
+    });
+  </script>
+</body>
+</html>

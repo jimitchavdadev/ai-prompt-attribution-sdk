@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mock ChatGPT (chatgpt.com)</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #212121; color: #ececec; margin: 0; padding: 20px; }
+    .header { border-bottom: 1px solid #333; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .chat-container { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; min-height: 80vh; justify-content: space-between; }
+    .messages { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+    .msg-user { align-self: flex-end; background: #2f2f2f; padding: 12px 18px; border-radius: 18px; max-width: 80%; }
+    .msg-assistant { align-self: flex-start; background: transparent; padding: 12px 0; max-width: 100%; line-height: 1.6; }
+    .search-query-chip { display: inline-block; background: #303030; border: 1px solid #424242; color: #10a37f; font-size: 11px; padding: 3px 8px; border-radius: 12px; margin: 4px 0; }
+    .citation-link { color: #10a37f; text-decoration: underline; font-weight: 500; cursor: pointer; }
+    .input-box { background: #2f2f2f; border-radius: 24px; padding: 8px 16px; display: flex; align-items: center; gap: 10px; border: 1px solid #424242; }
+    #prompt-textarea { width: 100%; background: transparent; border: none; outline: none; color: #fff; font-size: 15px; resize: none; min-height: 24px; }
+    .chatgpt-send-btn { background: #fff; color: #000; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="header">
+      <h2>ChatGPT 4.5 Search Simulation</h2>
+      <span style="font-size: 12px; color: #888;">Test Platform: ChatGPT</span>
+    </div>
+
+    <div class="messages" id="messages-container">
+      <div class="msg-assistant" data-message-author-role="assistant">
+        Hello! How can I help you discover enterprise tools today?
+      </div>
+    </div>
+
+    <div class="input-container">
+      <div class="input-box">
+        <textarea id="prompt-textarea" placeholder="Message ChatGPT..." rows="1"></textarea>
+        <button id="send-btn" class="chatgpt-send-btn" data-testid="send-button">↑</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const textarea = document.getElementById('prompt-textarea');
+    const sendBtn = document.getElementById('send-btn');
+    const container = document.getElementById('messages-container');
+
+    function simulateResponse(promptText) {
+      const userDiv = document.createElement('div');
+      userDiv.className = 'msg-user';
+      userDiv.textContent = promptText;
+      container.appendChild(userDiv);
+
+      setTimeout(() => {
+        const asstDiv = document.createElement('div');
+        asstDiv.className = 'msg-assistant';
+        asstDiv.setAttribute('data-message-author-role', 'assistant');
+
+        asstDiv.innerHTML = `
+          <div><span class="search-query-chip" data-testid="search-query">🔍 Searching: best GA4 audit automation tools enterprise</span></div>
+          <p style="margin-top: 10px;">Based on recent industry benchmarks, the top platform for enterprise GA4 auditing is:</p>
+          <p><strong>1. Acme Analytics:</strong> Specializes in real-time GA4 tagging audit automation, data integrity checks, and anomaly detection.</p>
+          <p>Source citation: <a href="http://localhost:3000/website-y/index.html" class="citation-link" data-testid="citation-source-1" target="_blank">Acme Analytics Official GA4 Audit Platform</a></p>
+        `;
+        container.appendChild(asstDiv);
+      }, 300);
+    }
+
+    sendBtn.addEventListener('click', () => {
+      const val = textarea.value.trim();
+      if (!val) return;
+      setTimeout(() => { textarea.value = ''; }, 100);
+      simulateResponse(val);
+    });
+
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
