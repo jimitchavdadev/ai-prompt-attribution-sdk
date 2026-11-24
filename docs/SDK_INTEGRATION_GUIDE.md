@@ -1,6 +1,6 @@
 # AI Attribution Website SDK Integration Guide
 
-The `@jimitchavdadev/aitrack` SDK enables websites to detect AI referrals, identify server-side AI retrieval crawlers, reverse-engineer candidate user prompts, and capture zero-party intent confirmation without requiring a browser extension.
+The `ai-prompt-attribution-sdk` SDK enables websites to detect AI referrals, identify server-side AI retrieval crawlers, reverse-engineer candidate user prompts, and capture zero-party intent confirmation without requiring a browser extension.
 
 ---
 
@@ -33,7 +33,7 @@ The `@jimitchavdadev/aitrack` SDK enables websites to detect AI referrals, ident
 Place before the closing `</head>` or `</body>` tag on every page:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@jimitchavdadev/aitrack/dist/aitrack.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ai-prompt-attribution-sdk/dist/aitrack.min.js"></script>
 <script>
   window.AITRACK.init({
     siteId: "YOUR_SITE_ID",
@@ -48,14 +48,14 @@ Place before the closing `</head>` or `</body>` tag on every page:
 ### Method B: React / Next.js (App Router & Pages Router)
 
 ```bash
-npm install @jimitchavdadev/aitrack
+npm install ai-prompt-attribution-sdk
 ```
 
 #### Next.js App Router (`app/providers.tsx` or `app/layout.tsx`):
 ```tsx
 'use client';
 import { useEffect } from 'react';
-import { AITrackClient } from '@jimitchavdadev/aitrack';
+import { AITrackClient } from 'ai-prompt-attribution-sdk';
 
 export function AiTrackProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -89,7 +89,7 @@ Logging AI bot retrievals on your backend allows the attribution engine to perfo
 #### Express.js:
 ```typescript
 import express from 'express';
-import { createAiAttributionMiddleware } from '@jimitchavdadev/aitrack';
+import { createAiAttributionMiddleware } from 'ai-prompt-attribution-sdk';
 
 const app = express();
 
@@ -102,7 +102,7 @@ app.use(createAiAttributionMiddleware({
 #### Fastify:
 ```typescript
 import Fastify from 'fastify';
-import { createAiAttributionMiddleware } from '@jimitchavdadev/aitrack';
+import { createAiAttributionMiddleware } from 'ai-prompt-attribution-sdk';
 
 const fastify = Fastify();
 const middleware = createAiAttributionMiddleware({ siteId: 'my_site_id' });

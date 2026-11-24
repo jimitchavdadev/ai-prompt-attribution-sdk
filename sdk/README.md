@@ -1,4 +1,4 @@
-# @jimitchavdadev/aitrack
+# ai-prompt-attribution-sdk
 
 Lightweight AI Prompt Attribution, Reverse-Engineering & Website Discovery Tracking SDK for websites and web applications.
 
@@ -8,12 +8,12 @@ Integrate directly into your website to detect AI referrals (ChatGPT, Claude, Ge
 
 ### Via NPM
 ```bash
-npm install @jimitchavdadev/aitrack
+npm install ai-prompt-attribution-sdk
 ```
 
 ### Via Browser Script Tag
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@jimitchavdadev/aitrack/dist/aitrack.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ai-prompt-attribution-sdk/dist/aitrack.min.js"></script>
 <script>
   AITRACK.init({
     siteId: "site_prod_your_site_id",
@@ -26,7 +26,7 @@ npm install @jimitchavdadev/aitrack
 ## Quick Start (Modern Web Apps / React / Vue / Vanilla JS)
 
 ```typescript
-import { AITrackClient } from '@jimitchavdadev/aitrack';
+import { AITrackClient } from 'ai-prompt-attribution-sdk';
 
 const aitrack = new AITrackClient();
 
@@ -36,7 +36,6 @@ aitrack.init({
   showIntentBanner: true,
   onAttribution: (event) => {
     console.log('Attribution event received:', event);
-    // e.g., forward to Google Analytics 4, Segment, or PostHog
     if (typeof gtag === 'function' && event.platform !== 'unknown') {
       gtag('event', 'ai_referral', {
         ai_platform: event.platform,
@@ -54,7 +53,7 @@ Log server-side AI retrieval bots (`ChatGPT-User`, `Claude-Web`, `GPTBot`, `Perp
 
 ```typescript
 import express from 'express';
-import { createAiAttributionMiddleware } from '@jimitchavdadev/aitrack';
+import { createAiAttributionMiddleware } from 'ai-prompt-attribution-sdk';
 
 const app = express();
 

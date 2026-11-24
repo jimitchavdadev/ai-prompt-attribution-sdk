@@ -69,7 +69,7 @@ The system establishes transparent attribution across 3 distinct activity types:
 │   ├── src/db/               # Relational schemas & typed Drizzle repositories
 │   ├── src/routes/           # SDK, Crawler, Privacy, Analytics routes
 │   └── src/services/         # Correlation engine, crawler classifier, PII redactor
-├── sdk/                      # Standalone Website SDK (@jimitchavdadev/aitrack)
+├── sdk/                      # Standalone Website SDK (ai-prompt-attribution-sdk)
 │   ├── src/client.ts         # Client tracking & zero-party intent widget
 │   ├── src/reconstructor.ts  # Reverse semantic prompt reconstruction engine
 │   ├── src/server.ts         # Express / Fastify / Node middleware

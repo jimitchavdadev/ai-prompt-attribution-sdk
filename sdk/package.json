@@ -1,6 +1,6 @@
 {
-  "name": "@jimitchavdadev/aitrack",
-  "version": "1.1.0",
+  "name": "ai-prompt-attribution-sdk",
+  "version": "1.1.1",
   "description": "AI Prompt Attribution & Website Discovery Tracking SDK",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -16,10 +16,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jimitchavdadev/ai-prompt-attribution-sdk.git"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
   },
   "keywords": [
     "ai-attribution",
